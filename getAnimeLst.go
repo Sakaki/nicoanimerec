@@ -1,10 +1,10 @@
 package main
 
 import (
-	"io/ioutil"
-	"github.com/PuerkitoBio/goquery"
-	"time"
 	"encoding/json"
+	"github.com/PuerkitoBio/goquery"
+	"io/ioutil"
+	"time"
 )
 
 type AnimeInfo struct {
@@ -50,33 +50,28 @@ func getAllAnimes() {
 						title = value
 					case "channel_id":
 						channel_id = value
-					case "start_time":
-						start_time = value
 					case "thumbnail_url":
 						thumb_url = value
+					case "start_time":
+						start_time = value
 					}
-
-					if channel_id == "" {
+				})
+				if channel_id == "" {
+					return
+				}
+				for _, item := range tmpchs {
+					if item == channel_id {
 						return
 					}
-					for _, item := range tmpchs {
-						if item == channel_id {
-							return
-						}
-					}
-					tmpchs = append(tmpchs, value)
+				}
+				tmpchs = append(tmpchs, channel_id)
 
-					info := AnimeInfo{Title: title, Channel: channel_id, Date: start_time, Thumb: thumb_url, Weekday: weekday}
-					animelst = append(animelst, info)
-				})
+				info := AnimeInfo{Title: title, Channel: channel_id, Date: start_time, Thumb: thumb_url, Weekday: weekday}
+				animelst = append(animelst, info)
 			})
 		}
 	})
 
 	jsonstr, _ := json.Marshal(animelst)
 	ioutil.WriteFile("data/animelst.json", jsonstr, 0644)
-}
-
-func main() {
-	getAllAnimes()
 }

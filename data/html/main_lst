@@ -1,0 +1,19 @@
+<center>
+<div class="titleview">
+<h1>NicoAnimeREC</h1>
+</div>
+
+<p><a href="/recording">録画中のみ</a> / <a href="/">すべて</a></p>
+
+<table class="pure-table">
+    <thead>
+        <tr>
+            <th>曜日</th>
+            <th>サムネ</th>
+	    <th>録画</th>
+            <th>タイトル</th>
+            <th>チャンネル</th>
+        </tr>
+    </thead>
+
+    <tbody>

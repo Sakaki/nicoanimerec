@@ -1,0 +1,23 @@
+        <tr %Color%>
+            <td>%Weekday%</td>
+            <td><img src="%Thumb%" alt="サムネ"></td>
+	    <td><input type="button" onclick="
+	        try {
+	            var http = new ActiveXObject('Microsoft.XMLHTTP');
+		} catch(e) {
+		    var http = new XMLHttpRequest();
+		}
+		var recid = '%BtnId%';
+	    	if (this.value == '録画') {
+		    this.value = '録画中';
+		    http.open('GET', 'add/'+recid);
+		    http.send(null);
+		} else {
+		    this.value = '録画';
+		    http.open('GET', 'del/'+recid);
+		    http.send(null);
+		}
+	        " value="%ToRec%"></td>
+            <td>%Title%</td>
+            <td>%Channel%</td>
+        </tr>

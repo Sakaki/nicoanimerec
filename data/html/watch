@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> ビューページ </title>
+</head>
+
+<body>
+<video autoplay width="500">
+<source src="%Video%" type="video/ogg">
+<div><img alt="" src="photo.jpg" width="500" height="282" /></div>
+</video>
+
+</body>
+</html>

@@ -19,7 +19,7 @@ func makeHeader(title string) (header string) {
 }
 
 func loadHtml(filename string) string{
-        bdata, _ := ioutil.ReadFile("data/html/"+filename)
+        bdata, _ := ioutil.ReadFile(absPath("./data/html/"+filename))
 	return string(bdata)
 }
 
@@ -44,7 +44,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	traytmp := loadHtml("main_tray")
 
 	//アニメ一覧の読み込み
-	reader, _ := os.Open("data/animelst.json")
+	reader, _ := os.Open(absPath("./data/animelst.json"))
 	dec := json.NewDecoder(reader)
 	dec.Decode(&animelst)
 
@@ -89,7 +89,7 @@ func channel(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintf(w, makeHeader("チャンネル"))
 	footer := loadHtml("footer")
 
-	files, _ := ioutil.ReadDir("./videos/"+id)
+	files, _ := ioutil.ReadDir(absPath("./videos/"+id))
 	for _, video := range files {
 	        vname := video.Name()
 	        fmt.Fprintf(w, "<p><a href=\"/videos/"+id+"/"+vname+"\">"+vname+"</a></p>")
@@ -107,7 +107,7 @@ func watch(w http.ResponseWriter, r *http.Request) {
 }
 
 func readConf() (reader []string) {
-	bdata, _ := os.Open("data/config.json")
+	bdata, _ := os.Open(absPath("./data/config.json"))
 	dec := json.NewDecoder(bdata)
 	dec.Decode(&reader)
 
@@ -116,7 +116,7 @@ func readConf() (reader []string) {
 
 func writeConf(writer []string) {
         jsonstr, _ := json.Marshal(writer)
-	ioutil.WriteFile("data/config.json", jsonstr, 0644)
+	ioutil.WriteFile(absPath("./data/config.json"), jsonstr, 0644)
 }
 
 func addrec(w http.ResponseWriter, r *http.Request) {

@@ -2,7 +2,18 @@ package main
 
 import (
         "flag"
+	"bitbucket.org/kardianos/osext"
+	"strings"
 )
+
+func absPath(path string) string {
+        runpath, _ := osext.ExecutableFolder()
+	if strings.HasPrefix(path, "./") {
+	        path = path[2:]
+	}
+
+	return runpath+path
+}
 
 func main() {
         var (

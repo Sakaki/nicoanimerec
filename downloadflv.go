@@ -73,7 +73,7 @@ func downloadFromUrl(url string, fname string) {
 
 func main() {
     videoid := "sm24905365"
-    client := login("sakakicks333@yahoo.co.jp", "begizagon")
+    client := login("", "")
 
     vreq, _ := http.NewRequest("GET", "http://flapi.nicovideo.jp/api/getflv/"+videoid, nil)
     vres, _ := client.Do(vreq)

@@ -20,16 +20,20 @@ func main() {
 	        recmode bool
 		servermode bool
 		port string
+		mail string
+		passwd string
 	)
 
 	flag.BoolVar(&recmode, "r", false, "record mode")
 	flag.BoolVar(&servermode, "s", false, "server mode")
-	flag.StringVar(&port, "p", "8080", "server port")
+	flag.StringVar(&port, "P", "8080", "server port")
+	flag.StringVar(&mail, "m", "", "login mail addr")
+	flag.StringVar(&passwd, "p", "", "login passwd")
 	flag.Parse()
 
 	if recmode {
 	        getAllAnimes()
-                exeRec()
+                exeRec(mail, passwd)
 	}else if servermode {
 	        Server(port)
 	}

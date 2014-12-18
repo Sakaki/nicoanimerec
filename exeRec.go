@@ -17,17 +17,17 @@ func getExecLoc() string{
 	return abspath
 }
 
-func exeRec() {
+func exeRec(mail string, passwd string) {
         targets := readConf()
 	for _, ch_id := range targets {
-	        mkdircmd := exec.Command("mkdir", absPath("./videos/")+ch_id)
+	        loc := absPath("./videos/")+ch_id
+	        mkdircmd := exec.Command("mkdir", loc)
 		mkdircmd.Run()
 		videos := getRecoadableVideos(ch_id)
 		for _, video := range videos {
 		         video = strings.Replace(video, "http://www.nicovideo.jp/watch/", "", -1)
 			 fmt.Println(video)
-	                 reccmd := exec.Command("python", absPath("./pyniconico/downloadflv.py"), "-l", absPath("./videos/"+ch_id), video)
-			 reccmd.Run()
+			 Download(video, loc, mail, passwd)
 		}
 	}
 }

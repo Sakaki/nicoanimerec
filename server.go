@@ -75,7 +75,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	       tray = strings.Replace(tray, "%Color%", traycolor, -1)
 	       tray = strings.Replace(tray, "%ToRec%", btntxt, -1)
 	       tray = strings.Replace(tray, "%Title%", data.Title, -1)
-	       tray = strings.Replace(tray, "%Channel%", "<a href=\"/channel/"+data.Channel+"\">"+data.Channel+"</a>", -1)
+	       tray = strings.Replace(tray, "%Channel%", "<a href=\"./channel/"+data.Channel+"\">"+data.Channel+"</a>", -1)
 	       fmt.Fprintf(w, tray)
 	}
 	fmt.Fprintf(w, string(footer))
@@ -85,14 +85,14 @@ func channel(w http.ResponseWriter, r *http.Request) {
         params := r.URL.Query()
 	id := params.Get(":id")
 
-	fmt.Fprintf(w, "<p><a href=\"/\">HOME</a></p><br>")
+	fmt.Fprintf(w, "<p><a href=\"../\">HOME</a></p><br>")
         fmt.Fprintf(w, makeHeader("チャンネル"))
 	footer := loadHtml("footer")
 
 	files, _ := ioutil.ReadDir(absPath("./videos/"+id))
 	for _, video := range files {
 	        vname := video.Name()
-	        fmt.Fprintf(w, "<p><a href=\"/videos/"+id+"/"+vname+"\">"+vname+"</a></p>")
+	        fmt.Fprintf(w, "<p><a href=\"../watch/"+id+"/"+vname+"\">"+readVName(vname)+"</a></p>")
 	}
 	fmt.Fprintf(w, footer)
 }
@@ -103,7 +103,7 @@ func watch(w http.ResponseWriter, r *http.Request) {
 	video := params.Get(":video")
 
 	moviepage := loadHtml("watch")
-	fmt.Fprintf(w, strings.Replace(moviepage, "%Video%", "/videos/"+id+"/"+video, -1))
+	fmt.Fprintf(w, strings.Replace(moviepage, "%Video%", id+"/"+video, -1))
 }
 
 func readConf() (reader []string) {

@@ -1,14 +1,22 @@
-<!DOCTYPE html>
 <html>
 <head>
-<title> ビューページ </title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="../../videos/build/jquery.js"></script>	
+	<script src="../../videos/build/mediaelement-and-player.min.js"></script>
+	<link rel="stylesheet" href="../../videos/build/mediaelementplayer.min.css" />
 </head>
-
 <body>
-<video autoplay width="500">
-<source src="%Video%" type="video/ogg">
-<div><img alt="" src="photo.jpg" width="500" height="282" /></div>
+<video width="800" height="450" id="player1" controls="controls" preload="auto">
+  <!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
+  <source type="video/mp4" src="../../videos/%Video%"/>
+  <!-- Flash fallback for non-HTML5 browsers without JavaScript -->
+  <object width="800" height="450" type="application/x-shockwave-flash" data="../../videos/build/flashmediaelement.swf">
+    <param name="movie" value="../../videos/build/flashmediaelement.swf" />
+    <param name="flashvars" value="controls=true&file="../../videos/%Video%" />
+  </object>
 </video>
-
+<script>
+$('video').mediaelementplayer();
+</script>
 </body>
 </html>

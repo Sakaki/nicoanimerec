@@ -6,11 +6,12 @@ import (
     "net/http"
     "net/http/cookiejar"
     "net/url"
-//    "regexp"
     "fmt"
     "strconv"
     "io"
     "os"
+    "encoding/xml"
+    "encoding/json"
 )
 
 func login(mail string, passwd string) *http.Client {
@@ -33,7 +34,7 @@ func login(mail string, passwd string) *http.Client {
     return client
 }
 
-func UrlEncode(source string) (decoded string){
+func urlEncode(source string) (decoded string){
     for idx := 0; idx < len(source); idx++ {
     	if source[idx] == '%' {
 	   numchar, _ := strconv.ParseUint(source[idx+1:idx+3], 16,0)
@@ -44,11 +45,11 @@ func UrlEncode(source string) (decoded string){
 	   decoded += string(source[idx])
 	}
     }
-
+    fmt.Println(decoded)
     return
 }
 
-func downloadFromUrl(url string, fname string) {
+func downloadFromUrl(url string, fname string, client *http.Client) {
      fmt.Println("Downloading", url, "to", fname)
 
      output, err := os.Create(fname)
@@ -57,7 +58,8 @@ func downloadFromUrl(url string, fname string) {
      	return
      }
      defer output.Close()
-     response, err := http.Get(url)
+     req, _ := http.NewRequest("GET", url, nil)
+     response, err := client.Do(req)
      if err != nil {
      	fmt.Println("Error while downloading", url, "-", err)
      	return
@@ -71,9 +73,41 @@ func downloadFromUrl(url string, fname string) {
      fmt.Println(n, "bytes downloaded.")
 }
 
-func main() {
-    videoid := "sm24905365"
-    client := login("sakakicks333@yahoo.co.jp", "begizagon")
+type Thumb struct {
+      Title string `xml:"thumb>title"`
+}
+
+func readVName(vid string) (vname string) {
+    var vnames map[string]string 
+
+    bdata, _ := os.Open(absPath("./data/vnames.json"))
+    dec := json.NewDecoder(bdata)
+    dec.Decode(&vnames)
+
+    vname = vnames[vid]
+    if vname == "" {
+	vname = "none"
+    }
+
+    return
+}
+
+func saveVName(vid string, vname string) {
+    vnames := make(map[string]string)
+
+    bdata, _ := os.Open(absPath("./data/vnames.json"))
+    dec := json.NewDecoder(bdata)
+    dec.Decode(&vnames)
+
+    vnames[vid] = vname
+
+    jsonstr, _ := json.Marshal(vnames)
+    fmt.Println(vnames)
+    ioutil.WriteFile(absPath("./data/vnames.json"), jsonstr, 0644)
+}
+
+func Download(videoid string, location string, mail string, passwd string) {
+    client := login(mail, passwd)
 
     vreq, _ := http.NewRequest("GET", "http://flapi.nicovideo.jp/api/getflv/"+videoid, nil)
     vres, _ := client.Do(vreq)
@@ -81,9 +115,18 @@ func main() {
 
     vres.Body.Close()
 
-    xml := http.Get("http://ext.nicovideo.jp/api/getthumbinfo/"+videoid)
-    
+    xmlres, _ := http.Get("http://ext.nicovideo.jp/api/getthumbinfo/"+videoid)
+    rawxml, _ := ioutil.ReadAll(xmlres.Body)
+
+    dreq, _ := http.NewRequest("GET", "http://www.nicovideo.jp/watch/"+videoid, nil)
+    dres, _ := client.Do(dreq)
+    dres.Body.Close()
+
+    nicoXml := Thumb{""}
+    xml.Unmarshal(rawxml, &nicoXml)
 
     apiinfo := strings.Split(string(apibody[:]), "&")[2][4:]
-    downloadFromUrl(UrlEncode(apiinfo), "testvideo.flv")
+    vfile := location+"/"+videoid
+    downloadFromUrl(urlEncode(apiinfo), vfile, client)
+    saveVName(videoid, nicoXml.Title)
 }

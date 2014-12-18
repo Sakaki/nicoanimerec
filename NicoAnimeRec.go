@@ -1,27 +1,27 @@
 package main
 
 import (
-        "flag"
 	"bitbucket.org/kardianos/osext"
+	"flag"
 	"strings"
 )
 
 func absPath(path string) string {
-        runpath, _ := osext.ExecutableFolder()
+	runpath, _ := osext.ExecutableFolder()
 	if strings.HasPrefix(path, "./") {
-	        path = path[2:]
+		path = path[2:]
 	}
 
-	return runpath+path
+	return runpath + path
 }
 
 func main() {
-        var (
-	        recmode bool
+	var (
+		recmode    bool
 		servermode bool
-		port string
-		mail string
-		passwd string
+		port       string
+		mail       string
+		passwd     string
 	)
 
 	flag.BoolVar(&recmode, "r", false, "record mode")
@@ -32,9 +32,9 @@ func main() {
 	flag.Parse()
 
 	if recmode {
-	        getAllAnimes()
-                exeRec(mail, passwd)
-	}else if servermode {
-	        Server(port)
+		GetAllAnimes()
+		DoRecord(mail, passwd)
+	} else if servermode {
+		Server(port)
 	}
 }

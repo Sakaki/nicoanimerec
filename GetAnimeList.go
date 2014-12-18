@@ -15,7 +15,7 @@ type AnimeInfo struct {
 	Weekday time.Weekday
 }
 
-func getAllAnimes() {
+func GetAllAnimes() {
 	var (
 		title      string
 		channel_id string

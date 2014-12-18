@@ -1,14 +1,14 @@
 package main
 
 import (
-        "fmt"
-        "github.com/drone/routes"
-        "net/http"
 	"encoding/json"
+	"fmt"
+	"github.com/drone/routes"
 	"io/ioutil"
+	"net/http"
 	"os"
-	"time"
 	"strings"
+	"time"
 )
 
 func makeHeader(title string) (header string) {
@@ -18,22 +18,22 @@ func makeHeader(title string) (header string) {
 	return header
 }
 
-func loadHtml(filename string) string{
-        bdata, _ := ioutil.ReadFile(absPath("./data/html/"+filename))
+func loadHtml(filename string) string {
+	bdata, _ := ioutil.ReadFile(absPath("./data/html/" + filename))
 	return string(bdata)
 }
 
 func redirect_home(w http.ResponseWriter, r *http.Request) {
-        home(w, r)
+	home(w, r)
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
-        params := r.URL.Query()
+	params := r.URL.Query()
 	filter := params.Get(":filter")
 
-        var (
-	        animelst []AnimeInfo
-		trflag bool
+	var (
+		animelst []AnimeInfo
+		trflag   bool
 	)
 
 	//要素の読み込み
@@ -55,50 +55,50 @@ func home(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, titleview)
 	fmt.Fprintf(w, lstview)
 	for _, data := range animelst {
-	       tray := strings.Replace(traytmp, "%Weekday%", time.Weekday(data.Weekday).String(), -1)
-	       tray = strings.Replace(tray, "%Thumb%", data.Thumb, -1)
-	       tray = strings.Replace(tray, "%BtnId%", data.Channel, -1)
-	       btntxt := "録画"
-	       for _, item := range rec_chs {
-	               if item == data.Channel {
-		               btntxt = "録画中"
-		       }
-	       }
-	       if btntxt != "録画中" && filter == "recording" {
-	               continue
-	       }
-	       trflag = !trflag
-	       traycolor := ""
-	       if trflag {
-	               traycolor = "class=\"pure-table-odd\""
-	       }
-	       tray = strings.Replace(tray, "%Color%", traycolor, -1)
-	       tray = strings.Replace(tray, "%ToRec%", btntxt, -1)
-	       tray = strings.Replace(tray, "%Title%", data.Title, -1)
-	       tray = strings.Replace(tray, "%Channel%", "<a href=\"./channel/"+data.Channel+"\">"+data.Channel+"</a>", -1)
-	       fmt.Fprintf(w, tray)
+		tray := strings.Replace(traytmp, "%Weekday%", time.Weekday(data.Weekday).String(), -1)
+		tray = strings.Replace(tray, "%Thumb%", data.Thumb, -1)
+		tray = strings.Replace(tray, "%BtnId%", data.Channel, -1)
+		btntxt := "録画"
+		for _, item := range rec_chs {
+			if item == data.Channel {
+				btntxt = "録画中"
+			}
+		}
+		if btntxt != "録画中" && filter == "recording" {
+			continue
+		}
+		trflag = !trflag
+		traycolor := ""
+		if trflag {
+			traycolor = "class=\"pure-table-odd\""
+		}
+		tray = strings.Replace(tray, "%Color%", traycolor, -1)
+		tray = strings.Replace(tray, "%ToRec%", btntxt, -1)
+		tray = strings.Replace(tray, "%Title%", data.Title, -1)
+		tray = strings.Replace(tray, "%Channel%", "<a href=\"./channel/"+data.Channel+"\">"+data.Channel+"</a>", -1)
+		fmt.Fprintf(w, tray)
 	}
 	fmt.Fprintf(w, string(footer))
 }
 
 func channel(w http.ResponseWriter, r *http.Request) {
-        params := r.URL.Query()
+	params := r.URL.Query()
 	id := params.Get(":id")
 
 	fmt.Fprintf(w, "<p><a href=\"../\">HOME</a></p><br>")
-        fmt.Fprintf(w, makeHeader("チャンネル"))
+	fmt.Fprintf(w, makeHeader("チャンネル"))
 	footer := loadHtml("footer")
 
-	files, _ := ioutil.ReadDir(absPath("./videos/"+id))
+	files, _ := ioutil.ReadDir(absPath("./videos/" + id))
 	for _, video := range files {
-	        vname := video.Name()
-	        fmt.Fprintf(w, "<p><a href=\"../watch/"+id+"/"+vname+"\">"+readVName(vname)+"</a></p>")
+		vname := video.Name()
+		fmt.Fprintf(w, "<p><a href=\"../watch/"+id+"/"+vname+"\">"+readVName(vname)+"</a></p>")
 	}
 	fmt.Fprintf(w, footer)
 }
 
 func watch(w http.ResponseWriter, r *http.Request) {
-        params := r.URL.Query()
+	params := r.URL.Query()
 	id := params.Get(":id")
 	video := params.Get(":video")
 
@@ -115,19 +115,19 @@ func readConf() (reader []string) {
 }
 
 func writeConf(writer []string) {
-        jsonstr, _ := json.Marshal(writer)
+	jsonstr, _ := json.Marshal(writer)
 	ioutil.WriteFile(absPath("./data/config.json"), jsonstr, 0644)
 }
 
 func addrec(w http.ResponseWriter, r *http.Request) {
-        params := r.URL.Query()
+	params := r.URL.Query()
 	id := params.Get(":id")
 
 	rec_chs := readConf()
 
 	for _, item := range rec_chs {
-	        if item == id {
-		        return
+		if item == id {
+			return
 		}
 	}
 	rec_chs = append(rec_chs, id)
@@ -137,14 +137,14 @@ func addrec(w http.ResponseWriter, r *http.Request) {
 }
 
 func delrec(w http.ResponseWriter, r *http.Request) {
-        params := r.URL.Query()
+	params := r.URL.Query()
 	id := params.Get(":id")
 
 	rec_chs := readConf()
 
 	for num, item := range rec_chs {
-	        if item == id {
-		        rec_chs = append(rec_chs[:num], rec_chs[num+1:]...)
+		if item == id {
+			rec_chs = append(rec_chs[:num], rec_chs[num+1:]...)
 		}
 	}
 	writeConf(rec_chs)
@@ -152,7 +152,7 @@ func delrec(w http.ResponseWriter, r *http.Request) {
 }
 
 func Server(port string) {
-        mux := routes.New()
+	mux := routes.New()
 
 	pwd, _ := os.Getwd()
 	mux.Static("/videos", pwd)

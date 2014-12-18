@@ -1,4 +1,30 @@
 nicoanimerec
 ============
 
-Downloader and manager of animes published in niconico douga
+ニコニコ動画の公式が公開しているアニメのレコーダー兼サーバーになります。
+低容量のアニメファイルを保存しておけるので、外からアニメを試聴するのに向いています。
+
+## セットアップ
+
+ディレクトリに移動して以下を実行してください。
+(golangとhgsvnがインストールされ、GOPATH及びGOROOTが設定されていることが前提となります。 ※hgsvnはubuntuだと`sudo apt-get install hgsvn`で入ります)
+
+```
+./setup.sh
+```
+
+カレントディレクトリに実行ファイルである./NicoAnimeRec が生成されます。
+
+## 使用方法
+
+```
+./NicoAnimeRec [-s|-r] [-m MAIL] [-p PASSWORD] [-P PORT]
+
+ -s サーバーを起動します
+ -r 設定に従い録画(ダウンロード)を行います
+ -m メールアドレスを指定します(-r モードのみ)
+ -p パスワードを指定します(-r モードのみ)
+ -P サーバーのポートを指定します(-s モードのみ)
+```
+
+サーバーモードを常時起動しておき、cronとかで録画モードを実行することを想定しています。
